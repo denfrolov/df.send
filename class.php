@@ -2,6 +2,10 @@
 
 use \Bitrix\Main\Localization\Loc;
 
+/* Добавить в init.php для гугл-рекаптчи
+define('GOOGLE_RECAPTCHA_KEY', 'YOUR_KEY');
+define('GOOGLE_RECAPTCHA_SECRET_KEY', 'YOUR_SECRET_KEY');
+ */
 
 if (!function_exists('getCurl')) {
 	function getCurl($data, $url)
@@ -71,10 +75,10 @@ class dfForms extends CBitrixComponent
 			return ($a['SORT'] - $b['SORT']);
 		});
 		
-		if ($_REQUEST['IBLOCK_ID'] == $arParams['IBLOCK_ID'] && $arResult['ITEMS'] && GOOGLE_RECAPTCHA_KEY) {
-			if ($arParams['USE_RECAPTCHA'] == 'Y') {
+		if ($_REQUEST['IBLOCK_ID'] == $arParams['IBLOCK_ID'] && $arResult['ITEMS']) {
+			if ($arParams['USE_RECAPTCHA'] == 'Y' && GOOGLE_RECAPTCHA_SECRET_KEY) {
 				$recaptcha = getCurl(array(
-					'secret' => GOOGLE_RECAPTCHA_KEY,
+					'secret' => GOOGLE_RECAPTCHA_SECRET_KEY,
 					'response' => $_POST['recaptcha_response']
 				), 'https://www.google.com/recaptcha/api/siteverify');
 				if ($recaptcha['success'] === false) {
