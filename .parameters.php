@@ -28,7 +28,6 @@ $arComponentParameters = array(
 			"TYPE" => "LIST",
 			"VALUES" => $arTypesEx,
 			"REFRESH" => "Y",
-			'DEFAULT' => 'forms'
 		),
 		"IBLOCK_ID" => array(
 			"PARENT" => "BASE",
