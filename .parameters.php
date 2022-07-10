@@ -47,6 +47,12 @@ $arComponentParameters = array(
 			"PARENT" => "BASE",
 			"NAME" => "Деактивировать элемент",
 			"TYPE" => "CHECKBOX",
+		),
+		"BUTTON_TEXT" => array(
+			"PARENT" => "BASE",
+			"NAME" => "Текст кнопки",
+			"TYPE" => "STRING",
+			"DEFAULT" => 'Отправить'
 		)
 	)
 );

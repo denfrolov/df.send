@@ -48,7 +48,7 @@ if (SEND_JS != 'Y') {
 			<? if($arParams['USE_RECAPTCHA'] == 'Y'): ?>
 				<input type="hidden" name="recaptcha_response" class="recaptcha_response">
 			<? endif; ?>
-			<button type="submit" class="btn btn-primary"><?= Loc::getMessage("SEND") ?></button>
+			<button type="submit" class="btn btn-primary"><?= $arParams['BUTTON_TEXT'] ?></button>
 		</form>
 	<? else: ?>
 		<div class="df_result"> Сообщение отправлено!</div>
