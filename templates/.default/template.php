@@ -17,7 +17,6 @@ if (SEND_JS != 'Y') {
 	<? if ($arResult['POSTED'] != 'Y'): ?>
 		<form action="<?= $APPLICATION->GetCurPage() ?>" method="post" class="df_ajax_form" enctype="multipart/form-data">
 			<input type="hidden" name="IBLOCK_ID" value="<?= $arParams['IBLOCK_ID'] ?>">
-			<input type="hidden" name="SECTION_ID" value="<?= $arParams['SECTION_ID'] ?>">
 			<? foreach ($arResult['ITEMS'] as $arItem): ?>
 				<div class="form-group">
 					<label for="<?= $arItem['CODE'] ?>_<?= $arItem['ID'] ?>">
