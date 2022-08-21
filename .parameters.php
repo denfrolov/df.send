@@ -48,7 +48,7 @@ $arComponentParameters = array(
 			"NAME" => "Деактивировать элемент",
 			"TYPE" => "CHECKBOX",
 		),
-		"FORM_TITLe" => array(
+		"FORM_TITLE" => array(
 			"PARENT" => "BASE",
 			"NAME" => "Заголовок формы",
 			"TYPE" => "STRING",
