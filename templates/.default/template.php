@@ -8,7 +8,7 @@
 use \Bitrix\Main\Localization\Loc;
 
 $messages = Loc::loadLanguageFile(__FILE__);
-if (SEND_JS != 'Y') {
+if (defined('SEND_JS')) {
 	\Bitrix\Main\Page\Asset::getInstance()->addJs($this->GetFolder() . '/send.js');
 	define('SEND_JS', 'Y');
 }
@@ -44,7 +44,7 @@ if (SEND_JS != 'Y') {
 					<? endif; ?>
 				</div>
 			<? endforeach; ?>
-			<? if($arParams['USE_RECAPTCHA'] == 'Y'): ?>
+			<? if ($arParams['USE_RECAPTCHA'] == 'Y'): ?>
 				<input type="hidden" name="recaptcha_response" class="recaptcha_response">
 			<? endif; ?>
 			<button type="submit" class="btn btn-primary"><?= $arParams['BUTTON_TEXT'] ?></button>
