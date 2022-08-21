@@ -61,7 +61,7 @@ class dfForms extends CBitrixComponent
 			} else {
 				if ($arProperty['PROPERTY_TYPE'] == 'L') {
 					$arProperty['TYPE'] = 'select';
-					$property_enums = CIBlockPropertyEnum::GetList(array("VALUE" => "ASC", "SORT" => "ASC"), array("IBLOCK_ID" => $arParams['IBLOCK_ID'], "CODE" => $arProperty['CODE']));
+					$property_enums = CIBlockPropertyEnum::GetList(array("SORT" => "ASC", "VALUE" => "ASC"), array("IBLOCK_ID" => $arParams['IBLOCK_ID'], "CODE" => $arProperty['CODE']));
 					while ($enum_fields = $property_enums->GetNext()) {
 						$arProperty['VALUES'][] = $enum_fields;
 					}
