@@ -8,7 +8,7 @@
 use \Bitrix\Main\Localization\Loc;
 
 $messages = Loc::loadLanguageFile(__FILE__);
-if (defined('SEND_JS')) {
+if (!defined('SEND_JS')) {
 	\Bitrix\Main\Page\Asset::getInstance()->addJs($this->GetFolder() . '/send.js');
 	define('SEND_JS', 'Y');
 }
