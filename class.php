@@ -126,7 +126,6 @@ class dfForms extends CBitrixComponent
 				$c = true;
 				$message = '';
 				unset($arProps['IBLOCK_ID']);
-				unset($arProps['SECTION_ID']);
 				unset($arProps['FILE']);
 				foreach ($arProps as $key => $value) {
 					$key_lang = array_search($key, array_column($arResult['ITEMS'], 'CODE'));
