@@ -75,7 +75,7 @@ class dfForms extends CBitrixComponent
 			return ($a['SORT'] - $b['SORT']);
 		});
 		
-		if ($_REQUEST['IBLOCK_ID'] == $arParams['IBLOCK_ID'] && $arResult['ITEMS']) {
+		if ($_REQUEST['IBLOCK_ID'] == $arParams['IBLOCK_ID'] && $arResult['ITEMS'] && !defined('POSTED')) {
 			if ($arParams['USE_RECAPTCHA'] == 'Y' && GOOGLE_RECAPTCHA_SECRET_KEY) {
 				$recaptcha = getCurl(array(
 					'secret' => GOOGLE_RECAPTCHA_SECRET_KEY,
@@ -212,6 +212,7 @@ class dfForms extends CBitrixComponent
 				echo "Error: " . $el->LAST_ERROR;
 			}
 			$arResult['POSTED'] = 'Y';
+			define('POSTED', 'Y');
 		}
 		
 		
