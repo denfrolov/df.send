@@ -122,7 +122,7 @@ class dfForms extends CBitrixComponent
 				$arLoadProductArray['ACTIVE'] = 'N';
 			}
 			
-			if ($elementID = $el->Add($arLoadProductArray)) {
+			if ($arResult['ID'] = $elementID = $el->Add($arLoadProductArray)) {
 				$c = true;
 				$message = '';
 				unset($arProps['IBLOCK_ID']);
