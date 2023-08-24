@@ -115,7 +115,7 @@ class dfForms extends CBitrixComponent
 				"MODIFIED_BY" => 1, // элемент изменен текущим пользователем
 				"IBLOCK_ID" => $arParams['IBLOCK_ID'],
 				"PROPERTY_VALUES" => $arProps,
-				"NAME" => $arProps['NAME'] . ' от ' . date("Y-m-d H:i:s"),
+				"NAME" => ($arProps['NAME'] ? $arProps['NAME'] : $arProps['name']) . ' от ' . date("Y-m-d H:i:s"),
 				"ACTIVE" => "Y"
 			);
 			if ($arParams['DEACTIVATE'] == 'Y') {
