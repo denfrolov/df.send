@@ -45,13 +45,13 @@ class dfForms extends CBitrixComponent
 				$arProperty['IS_REQUIRED'] = 'N';
 			}
 			if ($arProperty['USER_TYPE'] != 'HTML' && $arProperty['PROPERTY_TYPE'] != 'L') {
-				if ($arProperty['CODE'] == 'EMAIL' || stripos($arProperty['NAME'], Loc::getMessage("EMAIL"))) {
+				if (stripos($arProperty['CODE'], 'mail') || stripos($arProperty['NAME'], Loc::getMessage("EMAIL"))) {
 					$arProperty['TYPE'] = 'email';
-				} elseif ($arProperty['CODE'] == 'PHONE' || stripos($arProperty['NAME'], Loc::getMessage("PHONE"))) {
+				} elseif (stripos($arProperty['CODE'], 'phone') || stripos($arProperty['NAME'], Loc::getMessage("PHONE"))) {
 					$arProperty['TYPE'] = 'tel';
 				} elseif ($arProperty['PROPERTY_TYPE'] == 'F') {
 					$arProperty['TYPE'] = 'file';
-				} elseif (stripos($arProperty['CODE'], 'DATE') !== false) {
+				} elseif (stripos($arProperty['CODE'], 'date') !== false) {
 					$arProperty['TYPE'] = 'date';
 				} elseif (stripos($arProperty['CODE'], '_hidden') !== false) {
 					$arProperty['TYPE'] = 'hidden';
