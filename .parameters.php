@@ -38,11 +38,6 @@ $arComponentParameters = array(
 			"ADDITIONAL_VALUES" => "Y",
 			"REFRESH" => "Y",
 		),
-		"USE_RECAPTCHA" => array(
-			"PARENT" => "BASE",
-			"NAME" => "Использовать Google Recaptcha v3",
-			"TYPE" => "CHECKBOX",
-		),
 		"DEACTIVATE" => array(
 			"PARENT" => "BASE",
 			"NAME" => "Деактивировать элемент",
@@ -54,14 +49,46 @@ $arComponentParameters = array(
 			"TYPE" => "STRING",
 			"DEFAULT" => 'Напишите нам'
 		),
+		"AGREE_TEXT" => array(
+			"PARENT" => "BASE",
+			"NAME" => "Текст согласия на обработку персональных данных",
+			"TYPE" => "STRING",
+			"DEFAULT" => 'Нажимая на кнопку "Отправить", Вы даете согласие на обработку персональных данных',
+		),
+		"SUCCESS_TEXT" => array(
+			"PARENT" => "BASE",
+			"NAME" => "Сообщение после отправки",
+			"TYPE" => "STRING",
+			"DEFAULT" => 'Сообщение отправлено!',
+		),
 		"BUTTON_TEXT" => array(
 			"PARENT" => "BASE",
 			"NAME" => "Текст кнопки",
 			"TYPE" => "STRING",
 			"DEFAULT" => 'Отправить'
-		)
+		),
+		"USE_RECAPTCHA" => array(
+			"PARENT" => "BASE",
+			"NAME" => "Использовать Google Recaptcha v3",
+			"TYPE" => "CHECKBOX",
+			'REFRESH' => 'Y',
+		),
 	)
 );
+
+
+if ($arCurrentValues['USE_RECAPTCHA'] == 'Y') {
+	$arComponentParameters['PARAMETERS']['GOOGLE_RECAPTCHA_KEY'] = array(
+		"PARENT" => "BASE",
+		"NAME" => 'Публичный ключ',
+		"TYPE" => "STRING",
+	);
+	$arComponentParameters['PARAMETERS']['GOOGLE_RECAPTCHA_SECRET_KEY'] = array(
+		"PARENT" => "BASE",
+		"NAME" => 'Секретный ключ',
+		"TYPE" => "STRING",
+	);
+}
 
 if ($arProperty) {
 	$arComponentParameters['PARAMETERS']['REQUIRED_PROPERTIES'] = array(
