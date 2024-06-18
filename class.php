@@ -1,86 +1,72 @@
 <? if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
 
 use \Bitrix\Main\Localization\Loc;
+use Bitrix\Main\Error;
+use Bitrix\Main\ErrorCollection;
 
-/* Добавить в init.php для гугл-рекаптчи
-define('GOOGLE_RECAPTCHA_KEY', 'YOUR_KEY');
-define('GOOGLE_RECAPTCHA_SECRET_KEY', 'YOUR_SECRET_KEY');
- */
-
-if (!function_exists('getCurl')) {
-	function getCurl($data, $url)
-	{
-		$ch = curl_init($url);
-		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-		
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch, CURLOPT_HEADER, false);
-		$return = curl_exec($ch);
-		curl_close($ch);
-		return json_decode($return, true);
-	}
-}
+use Bitrix\Main\Errorable;
+use Bitrix\Main\Engine\ActionFilter;
+use Bitrix\Main\Engine\Contract\Controllerable;
+use CBitrixComponent;
 
 
-class dfForms extends CBitrixComponent
+class dfForms extends CBitrixComponent implements Controllerable, Errorable
 {
-	function getElements($arParams)
+	
+	protected ErrorCollection $errorCollection;
+	
+	
+	protected function listKeysSignedParameters(): array
 	{
-		CModule::IncludeModule("iblock");
-		CModule::IncludeModule("main");
-		$arFilter = array(
-			'IBLOCK_ID' => $arParams['IBLOCK_ID'],
-			'ACTIVE' => 'Y',
-		);
-		$rsProperty = CIBlockProperty::GetList(
-			array(),
-			$arFilter
-		);
-		while ($arProperty = $rsProperty->Fetch()) {
-			if (in_array($arProperty['CODE'], $arParams['REQUIRED_PROPERTIES'])) {
-				$arProperty['IS_REQUIRED'] = 'Y';
-			} else {
-				$arProperty['IS_REQUIRED'] = 'N';
-			}
-			if ($arProperty['USER_TYPE'] != 'HTML' && $arProperty['PROPERTY_TYPE'] != 'L') {
-				if (stripos($arProperty['CODE'], 'mail') || stripos($arProperty['NAME'], Loc::getMessage("EMAIL"))) {
-					$arProperty['TYPE'] = 'email';
-				} elseif (stripos($arProperty['CODE'], 'phone') || stripos($arProperty['NAME'], Loc::getMessage("PHONE"))) {
-					$arProperty['TYPE'] = 'tel';
-				} elseif ($arProperty['PROPERTY_TYPE'] == 'F') {
-					$arProperty['TYPE'] = 'file';
-				} elseif (stripos($arProperty['CODE'], 'date') !== false) {
-					$arProperty['TYPE'] = 'date';
-				} elseif (stripos($arProperty['CODE'], '_hidden') !== false) {
-					$arProperty['TYPE'] = 'hidden';
-				} else {
-					$arProperty['TYPE'] = 'text';
-				}
-			} else {
-				if ($arProperty['PROPERTY_TYPE'] == 'L') {
-					$arProperty['TYPE'] = 'select';
-					$property_enums = CIBlockPropertyEnum::GetList(array("SORT" => "ASC", "VALUE" => "ASC"), array("IBLOCK_ID" => $arParams['IBLOCK_ID'], "CODE" => $arProperty['CODE']));
-					while ($enum_fields = $property_enums->GetNext()) {
-						$arProperty['VALUES'][] = $enum_fields;
-					}
-				} else {
-					$arProperty['TYPE'] = 'textarea';
-				}
-			}
-			$arResult['ITEMS'][] = $arProperty;
-		}
-		usort($arResult['ITEMS'], function ($a, $b) {
-			return ($a['SORT'] - $b['SORT']);
-		});
-		
-		if ($_REQUEST['IBLOCK_ID'] == $arParams['IBLOCK_ID'] && $arResult['ITEMS'] && !defined('POSTED')) {
-			if ($arParams['USE_RECAPTCHA'] == 'Y' && GOOGLE_RECAPTCHA_SECRET_KEY) {
-				$recaptcha = getCurl(array(
-					'secret' => GOOGLE_RECAPTCHA_SECRET_KEY,
+		return [
+			'IBLOCK_ID',
+			'USE_RECAPTCHA',
+			'SUCCESS_TEXT',
+			'DEACTIVATE',
+			'GOOGLE_RECAPTCHA_KEY',
+			'GOOGLE_RECAPTCHA_SECRET_KEY',
+		];
+	}
+	
+	public function onPrepareComponentParams($arParams): array
+	{
+		$this->errorCollection = new ErrorCollection();
+		return $arParams;
+	}
+	
+	public function getErrors(): array
+	{
+		return $this->errorCollection->toArray();
+	}
+	
+	public function getErrorByCode($code): Error
+	{
+		return $this->errorCollection->getErrorByCode($code);
+	}
+	
+	// Описываем действия
+	public function configureActions(): array
+	{
+		return [
+			'sendMessage' => [
+				'-prefilters' => [
+					ActionFilter\Authentication::class,
+				]
+			]
+		];
+	}
+	
+	public function sendMessageAction(): array
+	{
+		$arParams = $this->arParams;
+		$arResult = $this->getElements($this->arParams);
+		if ($_REQUEST['IBLOCK_ID'] == $arParams['IBLOCK_ID']) {
+			if ($arParams['USE_RECAPTCHA'] == 'Y' && $arParams['GOOGLE_RECAPTCHA_SECRET_KEY'] && $arParams['GOOGLE_RECAPTCHA_KEY']) {
+				$httpClient = new \Bitrix\Main\Web\HttpClient();
+				$recaptcha = $httpClient->post('https://www.google.com/recaptcha/api/siteverify', array(
+					'secret' => $arParams['GOOGLE_RECAPTCHA_SECRET_KEY'],
 					'response' => $_POST['recaptcha_response']
-				), 'https://www.google.com/recaptcha/api/siteverify');
+				));
 				if ($recaptcha['success'] === false) {
 					die();
 				}
@@ -122,7 +108,7 @@ class dfForms extends CBitrixComponent
 				$arLoadProductArray['ACTIVE'] = 'N';
 			}
 			
-			if ($arResult['ID'] = $elementID = $el->Add($arLoadProductArray)) {
+			if ($elementID = $el->Add($arLoadProductArray)) {
 				$c = true;
 				$message = '';
 				unset($arProps['IBLOCK_ID']);
@@ -174,7 +160,7 @@ class dfForms extends CBitrixComponent
 						"EVENT_NAME" => 'DF_UNIVERSAL',
 						"NAME" => 'Универсальный шаблон от Дениса Фролова',
 						"DESCRIPTION" => '#TEXT# - содержит все свойства
-#TARGET# - цель заявки
+						#TARGET# - цель заявки
 						'
 					));
 					
@@ -211,15 +197,64 @@ class dfForms extends CBitrixComponent
 			} else {
 				echo "Error: " . $el->LAST_ERROR;
 			}
-			$arResult['POSTED'] = 'Y';
-			define('POSTED', 'Y');
 		}
-		
+		return array('success_text' => $arParams['SUCCESS_TEXT'], $arParams);
+	}
+	
+	
+	function getElements($arParams): array
+	{
+		CModule::IncludeModule("iblock");
+		CModule::IncludeModule("main");
+		$arFilter = array(
+			'IBLOCK_ID' => $arParams['IBLOCK_ID'],
+			'ACTIVE' => 'Y',
+		);
+		$rsProperty = CIBlockProperty::GetList(
+			array(),
+			$arFilter
+		);
+		while ($arProperty = $rsProperty->Fetch()) {
+			if ($arParams['REQUIRED_PROPERTIES'] && in_array($arProperty['CODE'], $arParams['REQUIRED_PROPERTIES'])) {
+				$arProperty['IS_REQUIRED'] = 'Y';
+			} else {
+				$arProperty['IS_REQUIRED'] = 'N';
+			}
+			if ($arProperty['USER_TYPE'] != 'HTML' && $arProperty['PROPERTY_TYPE'] != 'L') {
+				if (stripos($arProperty['CODE'], 'mail') || stripos($arProperty['NAME'], Loc::getMessage("EMAIL"))) {
+					$arProperty['TYPE'] = 'email';
+				} elseif (stripos($arProperty['CODE'], 'phone') || stripos($arProperty['NAME'], Loc::getMessage("PHONE"))) {
+					$arProperty['TYPE'] = 'tel';
+				} elseif ($arProperty['PROPERTY_TYPE'] == 'F') {
+					$arProperty['TYPE'] = 'file';
+				} elseif (stripos($arProperty['CODE'], 'date') !== false) {
+					$arProperty['TYPE'] = 'date';
+				} elseif (stripos($arProperty['CODE'], '_hidden') !== false) {
+					$arProperty['TYPE'] = 'hidden';
+				} else {
+					$arProperty['TYPE'] = 'text';
+				}
+			} else {
+				if ($arProperty['PROPERTY_TYPE'] == 'L') {
+					$arProperty['TYPE'] = 'select';
+					$property_enums = CIBlockPropertyEnum::GetList(array("SORT" => "ASC", "VALUE" => "ASC"), array("IBLOCK_ID" => $arParams['IBLOCK_ID'], "CODE" => $arProperty['CODE']));
+					while ($enum_fields = $property_enums->GetNext()) {
+						$arProperty['VALUES'][] = $enum_fields;
+					}
+				} else {
+					$arProperty['TYPE'] = 'textarea';
+				}
+			}
+			$arResult['ITEMS'][] = $arProperty;
+		}
+		usort($arResult['ITEMS'], function ($a, $b) {
+			return ($a['SORT'] - $b['SORT']);
+		});
 		
 		return $arResult;
 	}
 	
-	public function executeComponent()
+	public function executeComponent(): void
 	{
 		$this->arResult = array_merge($this->arResult, $this->getElements($this->arParams));
 		$this->includeComponentTemplate();
