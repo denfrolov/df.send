@@ -49,7 +49,7 @@ if ($arParams['USE_RECAPTCHA'] == 'Y' && $arParams['GOOGLE_RECAPTCHA_KEY'] && $a
 		<? if ($arParams['USE_RECAPTCHA'] == 'Y'): ?>
 			<input type="hidden" name="recaptcha_response" class="recaptcha_response">
 		<? endif; ?>
-		<?= $arParams['AGREE_TEXT'] ?>
+		<?= $arParams['~AGREE_TEXT'] ?>
 		<button type="submit" class="btn btn-primary"><?= $arParams['BUTTON_TEXT'] ?></button>
 	</form>
 <? endif; ?>
