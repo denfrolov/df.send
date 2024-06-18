@@ -67,6 +67,7 @@ class dfForms extends CBitrixComponent implements Controllerable, Errorable
 					'secret' => $arParams['GOOGLE_RECAPTCHA_SECRET_KEY'],
 					'response' => $_POST['recaptcha_response']
 				));
+				$recaptcha = json_decode($recaptcha, true);
 				if ($recaptcha['success'] === false) {
 					die();
 				}
