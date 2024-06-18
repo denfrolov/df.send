@@ -1,29 +1,20 @@
-$(document).on('submit', '.df_ajax_form', function (event) {
-	event.preventDefault();
-	let form = $(this);
-	let formData = new FormData(form[0]);
-	form.find('button').css({
-		'pointer-events': 'none',
-		'opacity': '0.3'
+BX.ready(function () {
+	document.querySelector('.df_ajax_form').addEventListener('submit', function (event) {
+		event.preventDefault();
+		let form = this;
+		let formData = new FormData(this);
+		BX.ajax.runComponentAction('df:df_messages', 'sendMessage', {
+			mode: 'class',
+			data: formData,
+			signedParameters: signedParameters
+		}).then(function (response) {
+			console.log(response);
+			if (response['status'] === 'success') {
+				form.innerHTML = "<div class='df_result'>" + response['data']['success_text'] + "</div>"
+			}
+		}, function (response) {
+			//сюда будут приходить все ответы, у которых status !== 'success'
+			console.log(response);
+		});
 	})
-	$.ajax({
-		url: form.attr('action'),
-		data: formData,
-		type: "POST",
-		contentType: false,
-		processData: false,
-		dataType: "html",
-		cache: false
-	}).done(function (data) {
-		if ($(data).find('.df_result').length) {
-			form[0].reset();
-			form.find('button').css({
-				'pointer-events': 'auto',
-				'opacity': '1'
-			});
-			alert($(data).find('.df_result').text());
-		} else {
-			alert('Что-то пошло не так,<br> перезагрузите страницу и попробуйте снова');
-		}
-	});
 });
