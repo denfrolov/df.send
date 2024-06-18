@@ -20,6 +20,8 @@ class dfForms extends CBitrixComponent implements Controllerable, Errorable
 	{
 		return [
 			'IBLOCK_ID',
+			'IBLOCK_TYPE',
+			'REQUIRED_PROPERTIES',
 			'USE_RECAPTCHA',
 			'SUCCESS_TEXT',
 			'DEACTIVATE',
