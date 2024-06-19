@@ -9,11 +9,13 @@
 use \Bitrix\Main\Localization\Loc;
 
 global $APPLICATION;
-if ($arParams['USE_RECAPTCHA'] == 'Y' && $arParams['GOOGLE_RECAPTCHA_KEY'] && $arParams['GOOGLE_RECAPTCHA_SECRET_KEY']) {
+if ($arParams['USE_RECAPTCHA'] == 'Y' && $arParams['GOOGLE_RECAPTCHA_KEY'] && $arParams['GOOGLE_RECAPTCHA_SECRET_KEY'] && !defined('RECAPTCHA_JS')) {
 	Bitrix\Main\Page\Asset::getInstance()->addJs('https://www.google.com/recaptcha/api.js?' . $arParams['GOOGLE_RECAPTCHA_KEY']);
 }
-\Bitrix\Main\Page\Asset::getInstance()->addJs($component->getPath() . '/send.js');
-
+if (!defined('SEND_JS')) {
+	\Bitrix\Main\Page\Asset::getInstance()->addJs($component->getPath() . '/send.js');
+	define('SEND_JS', true);
+}
 ?>
 <? if ($arResult['ITEMS']): ?>
 	<form action="<?= $APPLICATION->GetCurPage() ?>" method="post" class="df_ajax_form" enctype="multipart/form-data">
@@ -57,9 +59,9 @@ if ($arParams['USE_RECAPTCHA'] == 'Y' && $arParams['GOOGLE_RECAPTCHA_KEY'] && $a
 
 <script type="text/javascript">
 	if (!signedParameters.length) {
-	let signedParameters = '<?= $this->getComponent()->getSignedParameters() ?>'
+		let signedParameters = '<?= $this->getComponent()->getSignedParameters() ?>'
 	}
-	<?php if ($arParams['USE_RECAPTCHA'] == 'Y' && $arParams['GOOGLE_RECAPTCHA_KEY'] && $arParams['GOOGLE_RECAPTCHA_SECRET_KEY']): ?>
+	<?php if ($arParams['USE_RECAPTCHA'] == 'Y' && $arParams['GOOGLE_RECAPTCHA_KEY'] && $arParams['GOOGLE_RECAPTCHA_SECRET_KEY'] && !defined('RECAPTCHA_JS')): ?>
 	grecaptcha.ready(function () {
 		grecaptcha.execute('<?= $arParams['GOOGLE_RECAPTCHA_KEY'] ?>', {action: 'contact'}).then(function (token) {
 			let recaptchaResponse = document.getElementsByClassName('recaptcha_response');
@@ -68,5 +70,7 @@ if ($arParams['USE_RECAPTCHA'] == 'Y' && $arParams['GOOGLE_RECAPTCHA_KEY'] && $a
 			}
 		});
 	});
-	<?php endif ?>
+	<?php
+	define('RECAPTCHA_JS', true);
+	endif ?>
 </script>
