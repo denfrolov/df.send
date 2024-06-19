@@ -1,20 +1,21 @@
 BX.ready(function () {
-	document.querySelector('.df_ajax_form').addEventListener('submit', function (event) {
-		event.preventDefault();
-		let form = this;
-		let formData = new FormData(this);
-		BX.ajax.runComponentAction('df:df_messages', 'sendMessage', {
-			mode: 'class',
-			data: formData,
-			signedParameters: signedParameters
-		}).then(function (response) {
-			console.log(response);
-			if (response['status'] === 'success') {
-				form.innerHTML = "<div class='df_result'>" + response['data']['success_text'] + "</div>"
-			}
-		}, function (response) {
-			//сюда будут приходить все ответы, у которых status !== 'success'
-			console.log(response);
-		});
+	document.querySelectorAll('.df_ajax_form').forEach(function (el) {
+		el.addEventListener('submit', function (event) {
+			event.preventDefault();
+			let form = this;
+			let formData = new FormData(form);
+			BX.ajax.runComponentAction('df:df_messages', 'sendMessage', {
+				mode: 'class',
+				data: formData,
+				signedParameters: form.querySelector('[name="signedParameters"]').value
+			}).then(function (response) {
+				if (response['status'] === 'success') {
+					form.innerHTML = "<div class='df_result'>" + response['data']['success_text'] + "</div>"
+				}
+			}, function (response) {
+				alert("Что-то пошло не так, перезагрузите страницу и попробуйте снова")
+				console.log(response);
+			});
+		})
 	})
 });
