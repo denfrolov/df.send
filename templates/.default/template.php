@@ -16,10 +16,12 @@ if (!defined('SEND_JS')) {
 	\Bitrix\Main\Page\Asset::getInstance()->addJs($component->getPath() . '/send.js');
 	define('SEND_JS', true);
 }
+
 ?>
 <? if ($arResult['ITEMS']): ?>
 	<form action="<?= $APPLICATION->GetCurPage() ?>" method="post" class="df_ajax_form" enctype="multipart/form-data">
 		<input type="hidden" name="IBLOCK_ID" value="<?= $arParams['IBLOCK_ID'] ?>">
+		<input type="hidden" name="signedParameters" value="<?= $this->getComponent()->getSignedParameters() ?>">
 		<?= $arParams['FORM_TITLE'] ?>
 		<? foreach ($arResult['ITEMS'] as $arItem): ?>
 			<div class="form-group">
@@ -51,16 +53,12 @@ if (!defined('SEND_JS')) {
 		<? if ($arParams['USE_RECAPTCHA'] == 'Y'): ?>
 			<input type="hidden" name="recaptcha_response" class="recaptcha_response">
 		<? endif; ?>
-		<?= $arParams['~AGREE_TEXT'] ?>
+		<?= $arParams['AGREE_TEXT'] ?>
 		<button type="submit" class="btn btn-primary"><?= $arParams['BUTTON_TEXT'] ?></button>
 	</form>
 <? endif; ?>
 
-
 <script type="text/javascript">
-	if (typeof signedParameters === 'undefined') {
-		let signedParameters = '<?= $this->getComponent()->getSignedParameters() ?>'
-	}
 	<?php if ($arParams['USE_RECAPTCHA'] == 'Y' && $arParams['GOOGLE_RECAPTCHA_KEY'] && $arParams['GOOGLE_RECAPTCHA_SECRET_KEY'] && !defined('RECAPTCHA_JS')): ?>
 	grecaptcha.ready(function () {
 		grecaptcha.execute('<?= $arParams['GOOGLE_RECAPTCHA_KEY'] ?>', {action: 'contact'}).then(function (token) {
