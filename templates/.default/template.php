@@ -10,7 +10,7 @@ use \Bitrix\Main\Localization\Loc;
 
 global $APPLICATION;
 if ($arParams['USE_RECAPTCHA'] == 'Y' && $arParams['GOOGLE_RECAPTCHA_KEY'] && $arParams['GOOGLE_RECAPTCHA_SECRET_KEY'] && !defined('RECAPTCHA_JS')) {
-	Bitrix\Main\Page\Asset::getInstance()->addJs('https://www.google.com/recaptcha/api.js?' . $arParams['GOOGLE_RECAPTCHA_KEY']);
+	Bitrix\Main\Page\Asset::getInstance()->addJs('https://www.google.com/recaptcha/api.js?render=' . $arParams['GOOGLE_RECAPTCHA_KEY']);
 }
 if (!defined('SEND_JS')) {
 	\Bitrix\Main\Page\Asset::getInstance()->addJs($component->getPath() . '/send.js');
@@ -58,7 +58,7 @@ if (!defined('SEND_JS')) {
 
 
 <script type="text/javascript">
-	if (!signedParameters.length) {
+	if (typeof signedParameters === 'undefined') {
 		let signedParameters = '<?= $this->getComponent()->getSignedParameters() ?>'
 	}
 	<?php if ($arParams['USE_RECAPTCHA'] == 'Y' && $arParams['GOOGLE_RECAPTCHA_KEY'] && $arParams['GOOGLE_RECAPTCHA_SECRET_KEY'] && !defined('RECAPTCHA_JS')): ?>
