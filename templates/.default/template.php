@@ -56,7 +56,9 @@ if ($arParams['USE_RECAPTCHA'] == 'Y' && $arParams['GOOGLE_RECAPTCHA_KEY'] && $a
 
 
 <script type="text/javascript">
-	let signedParameters = '<?= $this->getComponent()->getSignedParameters() ?>';
+	if (!signedParameters.length) {
+	let signedParameters = '<?= $this->getComponent()->getSignedParameters() ?>'
+	}
 	<?php if ($arParams['USE_RECAPTCHA'] == 'Y' && $arParams['GOOGLE_RECAPTCHA_KEY'] && $arParams['GOOGLE_RECAPTCHA_SECRET_KEY']): ?>
 	grecaptcha.ready(function () {
 		grecaptcha.execute('<?= $arParams['GOOGLE_RECAPTCHA_KEY'] ?>', {action: 'contact'}).then(function (token) {
