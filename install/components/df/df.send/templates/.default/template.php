@@ -10,7 +10,7 @@ use \Bitrix\Main\Localization\Loc;
 
 CJSCore::Init(array("fx"));
 global $APPLICATION;
-if ($arResult['recaptchaPublicKey'] && $arResult['recaptchaSecretKey'] && !defined('RECAPTCHA_JS')) {
+if ($arResult['recaptchaPublicKey'] && $arResult['recaptchaSecretKey'] && $arResult['useRecaptcha'] == 'Y' && !defined('RECAPTCHA_JS')) {
 	Bitrix\Main\Page\Asset::getInstance()->addJs('https://www.google.com/recaptcha/api.js?render=' . $arResult['recaptchaPublicKey']);
 }
 if (!defined('SEND_JS')) {
@@ -60,7 +60,7 @@ if (!defined('SEND_JS')) {
 <? endif; ?>
 
 <script type="text/javascript">
-	<?php if ($arResult['recaptchaPublicKey'] && $arResult['recaptchaPublicKey'] && !defined('RECAPTCHA_JS')): ?>
+	<?php if ($arResult['recaptchaPublicKey'] && $arResult['recaptchaPublicKey'] && $arResult['useRecaptcha'] == 'Y' && !defined('RECAPTCHA_JS')): ?>
 	grecaptcha.ready(function () {
 		grecaptcha.execute('<?= $arResult['recaptchaPublicKey'] ?>', {action: 'contact'}).then(function (token) {
 			let recaptchaResponse = document.getElementsByClassName('recaptcha_response');

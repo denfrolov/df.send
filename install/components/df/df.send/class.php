@@ -62,9 +62,10 @@ class dfForms extends CBitrixComponent implements Controllerable, Errorable
 		$arParams = $this->arParams;
 		$arResult = $this->getElements($this->arParams);
 		if ($_REQUEST['IBLOCK_ID'] == $arParams['IBLOCK_ID']) {
+			$useRecaptcha = COption::GetOptionString('df.send', 'useRecaptcha');
 			$recaptchaPublicKey = COption::GetOptionString('df.send', 'googleRecaptchaPublic');
 			$recaptchaSecretKey = COption::GetOptionString('df.send', 'googleRecaptchaSecret');
-			if ($recaptchaPublicKey && $recaptchaSecretKey) {
+			if ($recaptchaPublicKey && $recaptchaSecretKey && $useRecaptcha == 'Y') {
 				$httpClient = new \Bitrix\Main\Web\HttpClient();
 				$recaptcha = $httpClient->post('https://www.google.com/recaptcha/api/siteverify', array(
 					'secret' => $recaptchaSecretKey,
@@ -211,11 +212,13 @@ class dfForms extends CBitrixComponent implements Controllerable, Errorable
 	{
 		CModule::IncludeModule("iblock");
 		CModule::IncludeModule("main");
+		$useRecaptcha = COption::GetOptionString('df.send', 'useRecaptcha');
 		$recaptchaPublicKey = COption::GetOptionString('df.send', 'googleRecaptchaPublic');
 		$recaptchaSecretKey = COption::GetOptionString('df.send', 'googleRecaptchaSecret');
-		if ($recaptchaPublicKey && $recaptchaSecretKey) {
+		if ($recaptchaPublicKey && $recaptchaSecretKey && $useRecaptcha == 'Y') {
 			$arResult['recaptchaPublicKey'] = $recaptchaPublicKey;
 			$arResult['recaptchaSecretKey'] = $recaptchaSecretKey;
+			$arResult['useRecaptcha'] = $useRecaptcha;
 		}
 		$arFilter = array(
 			'IBLOCK_ID' => $arParams['IBLOCK_ID'],

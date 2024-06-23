@@ -29,15 +29,21 @@ $aTabs = array(
 		'TITLE' => "Основные настройки",
 		'OPTIONS' => array(
 			array(
+				'useRecaptcha',
+				"Использовать Google reCAPTCHA",
+				'N',
+				array('checkbox')
+			),
+			array(
 				'googleRecaptchaPublic',
 				"Публичный ключ (Google reCAPTCHA)",
-				'Y',
+				'',
 				array('text', 70)
 			),
 			array(
 				'googleRecaptchaSecret',
 				"Секретный ключ (Google reCAPTCHA)",
-				'Y',
+				'',
 				array('text', 70)
 			),
 		)
@@ -89,6 +95,9 @@ if ($request->isPost() && check_bitrix_sessid()) {
 			}
 			if ($request['apply']) { // сохраняем введенные настройки
 				$optionValue = $request->getPost($arOption[0]);
+				if ($optionValue == '' && in_array('checkbox', $arOption[3])) {
+					$optionValue = 'N';
+				}
 				Option::set($module_id, $arOption[0], is_array($optionValue) ? implode(',', $optionValue) : $optionValue);
 			} elseif ($request['default']) { // устанавливаем по умолчанию
 				Option::set($module_id, $arOption[0], $arOption[2]);
