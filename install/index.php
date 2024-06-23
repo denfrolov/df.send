@@ -13,14 +13,14 @@ class df_send extends CModule
 
 
 
-	public function InstallFiles()
+	public function InstallFiles(): bool
 	{
 		CopyDirFiles(__DIR__ . "/components",
 			$_SERVER["DOCUMENT_ROOT"] . "/local/components", true, true);
 		return true;
 	}
 
-	public function UnInstallFiles()
+	public function UnInstallFiles(): bool
 	{
 		DeleteDirFilesEx("/local/components/df/df.send");
 		return true;
