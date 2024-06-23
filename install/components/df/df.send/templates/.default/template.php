@@ -7,6 +7,7 @@
  */
 
 use \Bitrix\Main\Localization\Loc;
+
 CJSCore::Init(array("fx"));
 global $APPLICATION;
 if ($arResult['recaptchaPublicKey'] && $arResult['recaptchaSecretKey'] && !defined('RECAPTCHA_JS')) {
@@ -18,32 +19,33 @@ if (!defined('SEND_JS')) {
 }
 ?>
 <? if ($arResult['ITEMS']): ?>
-	<form action="<?= $APPLICATION->GetCurPage() ?>" method="post" class="df_ajax_form" enctype="multipart/form-data">
+	<h3 class="h3"><?= $arParams['FORM_TITLE'] ?></h3>
+	<form action="<?= $APPLICATION->GetCurPage() ?>" method="post" class="df_ajax_form df-form"
+	      enctype="multipart/form-data">
 		<input type="hidden" name="IBLOCK_ID" value="<?= $arParams['IBLOCK_ID'] ?>">
 		<input type="hidden" name="signedParameters" value="<?= $this->getComponent()->getSignedParameters() ?>">
-		<?= $arParams['FORM_TITLE'] ?>
 		<? foreach ($arResult['ITEMS'] as $arItem): ?>
-			<div class="form-group">
-				<label for="<?= $arItem['CODE'] ?>_<?= $arItem['ID'] ?>">
+			<div class="df-form__group">
+				<label class="df-form__label" for="<?= $arItem['CODE'] ?>_<?= $arItem['ID'] ?>">
 					<span><?= $arItem['NAME'] ?></span>
 					<? if ($arItem['IS_REQUIRED'] == 'Y'): ?>
 						<i style="color:red;">*</i>
 					<? endif; ?>
 				</label>
 				<? if ($arItem['TYPE'] == 'textarea'): ?>
-					<textarea class="form-control" name="<?= $arItem['CODE'] ?>"
+					<textarea class="df-form__field" name="<?= $arItem['CODE'] ?>"
 					          id="<?= $arItem['CODE'] ?>_<?= $arItem['ID'] ?>"<?= $arItem['IS_REQUIRED'] == 'Y' ? ' required' : '' ?>></textarea>
 				<? elseif ($arItem['TYPE'] == 'select'): ?>
 					<select
 						name="<?= $arItem['CODE'] ?><?= $arItem['MULTIPLE'] == 'Y' ? '[]' : '' ?>"
-						<?= $arItem['MULTIPLE'] == 'Y' ? ' multiple' : '' ?> class="form-control">
+						<?= $arItem['MULTIPLE'] == 'Y' ? ' multiple' : '' ?> class="df-form__field">
 						<option value="0" selected disabled>Не выбрано</option>
 						<? foreach ($arItem['VALUES'] as $i2 => $arItem2): ?>
 							<option value="<?= $arItem2['ID'] ?>"><?= $arItem2['VALUE'] ?></option>
 						<? endforeach; ?>
 					</select>
 				<? else: ?>
-					<input type="<?= $arItem['TYPE'] ?>" class="form-control"
+					<input type="<?= $arItem['TYPE'] ?>" class="df-form__field"
 					       name="<?= $arItem['CODE'] . ($arItem['MULTIPLE'] == 'Y' ? '[]' : '') ?>"<?= $arItem['MULTIPLE'] == 'Y' ? ' multiple' : '' ?>
 					       id="<?= $arItem['CODE'] ?>_<?= $arItem['ID'] ?>"<?= $arItem['IS_REQUIRED'] == 'Y' ? ' required' : '' ?>>
 				<? endif; ?>
@@ -52,8 +54,8 @@ if (!defined('SEND_JS')) {
 		<? if ($arResult['recaptchaPublicKey'] && $arResult['recaptchaPublicKey']): ?>
 			<input type="hidden" name="recaptcha_response" class="recaptcha_response">
 		<? endif; ?>
-		<?= $arParams['AGREE_TEXT'] ?>
-		<button type="submit" class="btn btn-primary"><?= $arParams['BUTTON_TEXT'] ?></button>
+		<div class="df-form__group"><?= $arParams['AGREE_TEXT'] ?></div>
+		<button type="submit" class="df-form__btn"><?= $arParams['BUTTON_TEXT'] ?></button>
 	</form>
 <? endif; ?>
 
