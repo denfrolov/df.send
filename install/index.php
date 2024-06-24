@@ -26,13 +26,13 @@ class df_send extends CModule
 		return true;
 	}
 	
-	public function DoInstall()
+	public function DoInstall(): void
 	{
 		$this->InstallFiles();
 		\Bitrix\Main\ModuleManager::registerModule($this->MODULE_ID);
 	}
 	
-	public function DoUninstall()
+	public function DoUninstall(): void
 	{
 		$this->UnInstallFiles();
 		\Bitrix\Main\ModuleManager::unRegisterModule($this->MODULE_ID);
