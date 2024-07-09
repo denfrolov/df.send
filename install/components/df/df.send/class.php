@@ -143,12 +143,18 @@ class dfForms extends CBitrixComponent implements Controllerable, Errorable
 								$value = '<a href="' . $arElement['DETAIL_PAGE_URL'] . '">' . $arElement['NAME'] . '</a>';
 							}
 						}
-						$message .= "
-			" . (($c = !$c) ? '<tr>' : '<tr style="background-color: #f8f8f8;">') . "
-				<td style='padding: 10px; border: #e9e9e9 1px solid;'><b>$key_lang_name</b></td>
-				<td style='padding: 10px; border: #e9e9e9 1px solid;'>$value</td>
-			</tr>
-			";
+						if (is_array($value)) {
+							$newValue = '';
+							foreach ($value as $item) {
+								$newValue .= $item . '<br>';
+							}
+							$value = $newValue;
+						}
+						$message .=   (($c = !$c) ? '<tr>' : '<tr style="background-color: #f8f8f8;">') . "
+													<td style='padding: 10px; border: #e9e9e9 1px solid;'><b>$key_lang_name</b></td>
+													<td style='padding: 10px; border: #e9e9e9 1px solid;'>$value</td>
+												</tr>
+												";
 					}
 				}
 				$hasEventType = false;
