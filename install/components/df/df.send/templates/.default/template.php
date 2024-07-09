@@ -17,6 +17,7 @@ if (!defined('SEND_JS')) {
 	\Bitrix\Main\Page\Asset::getInstance()->addJs($component->getPath() . '/send.js');
 	define('SEND_JS', true);
 }
+$fullUrl = ((!empty($_SERVER['HTTPS'])) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 ?>
 <? if ($arResult['ITEMS']): ?>
 	<h3 class="h3"><?= $arParams['FORM_TITLE'] ?></h3>
@@ -27,7 +28,7 @@ if (!defined('SEND_JS')) {
 		<? foreach ($arResult['ITEMS'] as $arItem): ?>
 			<?php if ($arItem['TYPE'] == 'hidden'): ?>
 				<input type="hidden" name="<?= $arItem['CODE'] ?>"
-				       value="<?= stripos($arItem['CODE'], 'link') !== false ? $APPLICATION->GetCurPage() : '' ?>">
+				       value="<?= stripos($arItem['CODE'], 'link') !== false ? $fullUrl : '' ?>">
 				<?php continue; endif ?>
 			<div class="df-form__group">
 				<label class="df-form__label" for="<?= $arItem['CODE'] ?>_<?= $arItem['ID'] ?>">
