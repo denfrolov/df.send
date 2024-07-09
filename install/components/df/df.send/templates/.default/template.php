@@ -25,6 +25,10 @@ if (!defined('SEND_JS')) {
 		<input type="hidden" name="IBLOCK_ID" value="<?= $arParams['IBLOCK_ID'] ?>">
 		<input type="hidden" name="signedParameters" value="<?= $this->getComponent()->getSignedParameters() ?>">
 		<? foreach ($arResult['ITEMS'] as $arItem): ?>
+			<?php if ($arItem['TYPE'] == 'hidden'): ?>
+				<input type="hidden" name="<?= $arItem['CODE'] ?>"
+				       value="<?= stripos($arItem['CODE'], 'link') !== false ? $APPLICATION->GetCurPage() : '' ?>">
+			<?php endif ?>
 			<div class="df-form__group">
 				<label class="df-form__label" for="<?= $arItem['CODE'] ?>_<?= $arItem['ID'] ?>">
 					<span><?= $arItem['NAME'] ?></span>
