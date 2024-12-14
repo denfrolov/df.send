@@ -59,7 +59,9 @@ $fullUrl = ((!empty($_SERVER['HTTPS'])) ? 'https' : 'http') . '://' . $_SERVER['
 		<? if ($arResult['recaptchaPublicKey'] && $arResult['recaptchaPublicKey']): ?>
 			<input type="hidden" name="recaptcha_response" class="recaptcha_response">
 		<? endif; ?>
-		<div class="df-form__group"><?= $arParams['AGREE_TEXT'] ?></div>
+		<?php if ($arParams['AGREE_TEXT']): ?>
+			<div class="df-form__group"><?= $arParams['~AGREE_TEXT'] ?></div>
+		<?php endif ?>
 		<button type="submit" class="df-form__btn"><?= $arParams['BUTTON_TEXT'] ?></button>
 	</form>
 <? endif; ?>
