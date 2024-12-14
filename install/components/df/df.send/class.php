@@ -241,9 +241,9 @@ class dfForms extends CBitrixComponent implements Controllerable, Errorable
 				$arProperty['IS_REQUIRED'] = 'N';
 			}
 			if ($arProperty['USER_TYPE'] != 'HTML' && $arProperty['PROPERTY_TYPE'] != 'L') {
-				if (stripos($arProperty['CODE'], 'mail') !== false || stripos($arProperty['NAME'], Loc::getMessage("EMAIL")) !== false) {
+				if (stripos($arProperty['CODE'], 'mail') !== false) {
 					$arProperty['TYPE'] = 'email';
-				} elseif (stripos($arProperty['CODE'], 'phone') !== false || stripos($arProperty['NAME'], Loc::getMessage("PHONE")) !== false) {
+				} elseif (stripos($arProperty['CODE'], 'phone') !== false) {
 					$arProperty['TYPE'] = 'tel';
 				} elseif ($arProperty['PROPERTY_TYPE'] == 'F') {
 					$arProperty['TYPE'] = 'file';
