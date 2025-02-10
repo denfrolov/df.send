@@ -28,7 +28,7 @@ $fullUrl = ((!empty($_SERVER['HTTPS'])) ? 'https' : 'http') . '://' . $_SERVER['
 		<? foreach ($arResult['ITEMS'] as $arItem): ?>
 			<?php if ($arItem['TYPE'] == 'hidden'): ?>
 				<input type="hidden" name="<?= $arItem['CODE'] ?>"
-				       value="<?= stripos($arItem['CODE'], 'link') !== false ? $fullUrl : '' ?>">
+				       value="<?= $arItem['VALUE'] ?>">
 				<?php continue; endif ?>
 			<div class="df-form__group">
 				<label class="df-form__label" for="<?= $arItem['CODE'] ?>_<?= $arItem['ID'] ?>">
