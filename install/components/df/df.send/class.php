@@ -81,7 +81,7 @@ class dfForms extends CBitrixComponent implements Controllerable, Errorable
 			$arProps = array();
 			foreach ($arResult['ITEMS'] as $arItem) {
 				if ($_REQUEST[$arItem['CODE']] != '') {
-					$arProps[$arItem['CODE']] = $_REQUEST[$arItem['CODE']];
+					$arProps[$arItem['CODE']] = strip_tags($_REQUEST[$arItem['CODE']]);
 				}
 			}
 			$arFilesID = array();
